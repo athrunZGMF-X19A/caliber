@@ -106,12 +106,7 @@ public class BootController extends Helper {
 		}
 	}
 
-	@RequestMapping(value = "/home")
-	public String sendHome(HttpServletResponse response, Authentication auth) {
-		SalesforceUser a = (SalesforceUser) auth.getPrincipal();
-		response.addCookie(new Cookie("role", a.getRole()));
-		return "index";
-	}
+
 
 	/**
 	 * Retrieve the salesforce access_token from the forwarded request
