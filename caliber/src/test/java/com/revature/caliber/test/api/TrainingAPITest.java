@@ -21,6 +21,7 @@ import com.revature.caliber.beans.Address;
 import com.revature.caliber.beans.Trainer;
 import com.revature.caliber.beans.TrainerRole;
 import com.revature.caliber.data.BatchDAO;
+import com.revature.caliber.data.TraineeDAO;
 
 import io.restassured.http.ContentType;
 
@@ -41,9 +42,9 @@ public class TrainingAPITest extends AbstractAPITest {
 	 */
 	private String findByEmail = "training/trainer/byemail/patrick.walsh@revature.com/";
 
-	private String createTrainee ="/all/trainee/create";
-	private String updateTrainee = "/all/trainee/update";
-	private String deleteTrainee = "/all/trainee/delete/5468";
+	private String createTrainee ="all/trainee/create";
+	private String updateTrainee = "all/trainee/update";
+	private String deleteTrainee = "all/trainee/delete/5468";
 	private String retreiveTraineeByEmail = "/all/trainee/getByEmail/starrv2011@gmail.com";
 	private String createTrainer = "vp/trainer/create";
 	private String updateTrainer = "vp/trainer/update";
@@ -58,6 +59,8 @@ public class TrainingAPITest extends AbstractAPITest {
 
 	@Autowired
 	BatchDAO batchDao;
+	@Autowired
+	TraineeDAO traineeDao;
 
 	@Test
 	public void findByEmail() throws Exception {
@@ -220,59 +223,57 @@ public class TrainingAPITest extends AbstractAPITest {
 	public void createTraineeTest() throws Exception {
 		log.info("API Testing createTrainee at " + baseUrl + createTrainee);
 		Trainee expexted = new Trainee("Test McTest", "", "mctest@gmail.com", batchDao.findOne(2050));
-		given().spec(requestSpec).header(authHeader, accessToken)
+		given().spec(requestSpec).header("Authorization", accessToken)
 		.contentType(ContentType.JSON).body(expexted).when()
-			.post(baseUrl +createTrainee).then().assertThat().statusCode(201);
-		
-//		given().spec(requestSpec).header("Authorization", accessToken)
-//		.contentType(ContentType.JSON).body(location).when()
-//		.post(baseUrl + createLocationTest).then().assertThat().statusCode(201);
+		.post(baseUrl + createTrainee).then().assertThat().statusCode(201);
 	}
 	/**
 	 * Tests methods:
 	 * 
 	 * @see com.revature.controllers.TrainingController#updateTrainee
 	 */
-//	@Test
-//	public void updateTraineeTest() throws Exception {
-//		log.info("API Testing updateTrainee at " + baseUrl + updateTrainee);
-//		BatchDAO batchDao = new BatchDAO();
-//		Trainee expexted = new Trainee("Test McTest", "", "mctest@gmail.com", batchDao.findOne(2050));
-//		given().spec(requestSpec).header(authHeader, accessToken)
-//		.contentType(ContentType.JSON);
-//	}
-//	/**
-//	 * Tests methods:
-//	 * 
-//	 * @see com.revature.controllers.TrainingController#deleteTrainee
-//	 */
-//	@Test
-//	@Ignore
-//	public void deleteTraineeTest() throws Exception {
-//		log.info("API Testing deleteTrainee at " + baseUrl + deleteTrainee);
-//		BatchDAO batchDao = new BatchDAO();
-//		Trainee expexted = new Trainee("Test McTest", "", "mctest@gmail.com", batchDao.findOne(2050));
-//		given().spec(requestSpec).header(authHeader, accessToken)
-//		.contentType(ContentType.JSON).body(expexted).when().put(baseUrl + deleteTrainee)
-//		.then().assertThat().statusCode(204);
-//		
-//		
-//	}
-//	
-//	/**
-//	 * Tests methods:
-//	 * 
-//	 * @see com.revature.controllers.TrainingController#retreiveTraineeByEmail
-//	 */
-//	@Test
-//	@Ignore
-//	public void retreiveTraineeByEmailTest(){
-//		log.info("API Testing retreiveTraineeByEmail at " + baseUrl + retreiveTraineeByEmail);
-//		BatchDAO batchDao = new BatchDAO();
-//		Trainee expexted = new Trainee("Test McTest", "", "mctest@gmail.com", batchDao.findOne(2050));
-//		given().spec(requestSpec).header(authHeader, accessToken)
-//		.contentType(ContentType.JSON);
-//	}	
+	@Test
+	public void updateTraineeTest() throws Exception {
+		log.info("API Testing updateTrainee at " + baseUrl + updateTrainee);
+
+		Trainee expexted = traineeDao.findOne(5503);
+		System.out.println(expexted);
+		expexted.setName("Test McTest");
+
+		
+		given().spec(requestSpec).header("Authorization", accessToken)
+		.contentType(ContentType.JSON).body(new ObjectMapper().writeValueAsString(expexted))
+		.when().put(baseUrl + updateTrainee).then().assertThat().statusCode(204);
+	}
+	/**
+	 * Tests methods:
+	 * 
+	 * @see com.revature.controllers.TrainingController#deleteTrainee
+	 */
+	@Test
+	public void deleteTraineeTest() throws Exception {
+		log.info("API Testing deleteTrainee at " + baseUrl + deleteTrainee);
+		Trainee expexted = traineeDao.findOne(5500); 
+		given().spec(requestSpec).header("Authorization", accessToken)
+		.contentType(ContentType.JSON).body(new ObjectMapper().writeValueAsString(expexted)).when().put(baseUrl + deleteTrainee)
+		.then().assertThat().statusCode(204);
+		
+		
+	}
+	
+	/**
+	 * Tests methods:
+	 * 
+	 * @see com.revature.controllers.TrainingController#retreiveTraineeByEmail
+	 */
+	@Test
+	public void retreiveTraineeByEmailTest() throws Exception {
+		log.info("API Testing retreiveTraineeByEmail at " + baseUrl + retreiveTraineeByEmail);
+		Trainee expexted = new Trainee("Test McTest", "", "mctest@gmail.com", batchDao.findOne(2050));
+		given().spec(requestSpec).header("Authorization", accessToken).contentType(ContentType.JSON).when()
+		.get(baseUrl + findByEmail).then().assertThat().statusCode(200)
+		.body(matchesJsonSchema(new ObjectMapper().writeValueAsString(expexted)));
+	}	
 	
 }
 
