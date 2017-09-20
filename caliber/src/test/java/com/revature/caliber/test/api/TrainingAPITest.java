@@ -3,16 +3,16 @@ package com.revature.caliber.test.api;
 import static io.restassured.RestAssured.given;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
+<<<<<<< HEAD
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.test.annotation.Rollback;
 import org.springframework.web.bind.annotation.PathVariable;
+=======
+>>>>>>> 98dfeabb2ffcc214c1e52a241c6090c081a49c36
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,10 +42,13 @@ public class TrainingAPITest extends AbstractAPITest {
 	 */
 	private String findByEmail = "training/trainer/byemail/patrick.walsh@revature.com/";
 
+<<<<<<< HEAD
 	private String createTrainee ="all/trainee/create";
 	private String updateTrainee = "all/trainee/update";
 	private String deleteTrainee = "all/trainee/delete/5468";
 	private String retreiveTraineeByEmail = "/all/trainee/getByEmail/starrv2011@gmail.com";
+=======
+>>>>>>> 98dfeabb2ffcc214c1e52a241c6090c081a49c36
 	private String createTrainer = "vp/trainer/create";
 	private String updateTrainer = "vp/trainer/update";
 	private String makeInactive = "vp/trainer/delete";
@@ -267,6 +270,7 @@ public class TrainingAPITest extends AbstractAPITest {
 	 * @see com.revature.controllers.TrainingController#retreiveTraineeByEmail
 	 */
 	@Test
+<<<<<<< HEAD
 	public void retreiveTraineeByEmailTest() throws Exception {
 		log.info("API Testing retreiveTraineeByEmail at " + baseUrl + retreiveTraineeByEmail);
 		Trainee expexted = new Trainee("Test McTest", "", "mctest@gmail.com", batchDao.findOne(2050));
@@ -275,5 +279,13 @@ public class TrainingAPITest extends AbstractAPITest {
 		.body(matchesJsonSchema(new ObjectMapper().writeValueAsString(expexted)));
 	}	
 	
+=======
+	public void reactivateLocationTest() {
+		Address location = new Address(1, "299 CherryStreet", "FruityCity", "FL", "55555", "Revature", false);
+		log.info("API Testing reactivateLocation at baseUrl " + baseUrl);
+		given().spec(requestSpec).header("Authorization", accessToken).contentType(ContentType.JSON).body(location)
+				.when().put(baseUrl + reactivateLocationTest).then().assertThat().statusCode(204);
+	}
+>>>>>>> 98dfeabb2ffcc214c1e52a241c6090c081a49c36
 }
 
