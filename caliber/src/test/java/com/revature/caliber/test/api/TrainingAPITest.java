@@ -3,13 +3,21 @@ package com.revature.caliber.test.api;
 import static io.restassured.RestAssured.given;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.test.annotation.Rollback;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.caliber.beans.Trainee;
+import com.revature.caliber.beans.Address;
 import com.revature.caliber.beans.Trainer;
 import com.revature.caliber.beans.TrainerRole;
 import com.revature.caliber.data.BatchDAO;
@@ -24,12 +32,12 @@ import io.restassured.http.ContentType;
  * @author Patrick Walsh
  *
  */
-public class TrainingAPITest extends AbstractAPITest{
+public class TrainingAPITest extends AbstractAPITest {
 
 	private static final Logger log = Logger.getLogger(TrainingAPITest.class);
-	
+
 	/*
-	 * Trainer API endpoints
+	 * Training API endpoints
 	 */
 	private String findByEmail = "training/trainer/byemail/patrick.walsh@revature.com/";
 
@@ -38,10 +46,18 @@ public class TrainingAPITest extends AbstractAPITest{
 	private String deleteTrainee = "/all/trainee/delete/5468";
 	private String retreiveTraineeByEmail = "/all/trainee/getByEmail/starrv2011@gmail.com";
 	private String createTrainer = "vp/trainer/create";
-	
+	private String updateTrainer = "vp/trainer/update";
+	private String makeInactive = "vp/trainer/delete";
+	private String getAllTrainersTitles = "vp/trainer/titles";
+	private String getAllTrainers= "all/trainer/all";
+	private String createLocationTest = "vp/location/create";
+	private String updateLocationTest = "vp/location/update";
+	private String getAllLocationTest = "all/location/all";
+	private String removeLocationTest = "vp/location/delete";
+	private String reactivateLocationTest = "vp/location/reactivate";
+
 	@Autowired
 	BatchDAO batchDao;
-
 
 	@Test
 	public void findByEmail() throws Exception {
@@ -53,53 +69,210 @@ public class TrainingAPITest extends AbstractAPITest{
 				.get(baseUrl + findByEmail).then().assertThat().statusCode(200)
 				.body(matchesJsonSchema(new ObjectMapper().writeValueAsString(expected)));
 	}
-
-	@Test
-	@Ignore
-	public void createTrainer() throws Exception {
-		Trainer expected = new Trainer("Randolph Scott", "Senior Trainer", "randolph.scott@revature.com",
-				TrainerRole.ROLE_TRAINER);
-		log.info("API Testing createTrainer at " + baseUrl + createTrainer);
-		given().spec(requestSpec).header(authHeader, accessToken)
-				.contentType(ContentType.JSON).body(new ObjectMapper().writeValueAsString(expected)).when()
-				.post(baseUrl + createTrainer).then().assertThat().statusCode(201);
-	}
+	/**
+	 * Tests methods:
+	 * @see com.revature.caliber.controllers.TrainingController.createTrainer(Trainer)
+	 * @throws Exception
+	 */
+//	@Test
+//	public void createTrainer() throws Exception{
+//		Trainer expected = new Trainer("RolledBack", "Senior Trainer", "don.welshy@revature.com",
+//				TrainerRole.ROLE_TRAINER);
+//		log.info("API Testing createTrainer at baseUrl  " + baseUrl);
+//		given().spec(requestSpec).header("Authorization", accessToken)
+//		.contentType(ContentType.JSON).body(new ObjectMapper().writeValueAsString(expected)).when()			
+//		.post(baseUrl + createTrainer)
+//		.then().assertThat().statusCode(201);
+//	}
+//	/**
+//	 * Tests methods:
+//	 * @see com.revature.caliber.controllers.TrainingController.updateTrainer(Trainer)
+//	 * @throws Exception
+//	 */
+//	@Test
+//	public void updateTrainer() throws Exception{
+//		Trainer expected = new Trainer("Newwer Trainer", "Senior Trainer", "don.welshy@revature.com",
+//				TrainerRole.ROLE_TRAINER);
+//		expected.setTrainerId(3);
+//		log.info("API Testing updateTrainer at baseUrl  " + baseUrl);
+//		given().spec(requestSpec).header("Authorization", accessToken)
+//		.contentType(ContentType.JSON).body(new ObjectMapper().writeValueAsString(expected)).when()				
+//		.put(baseUrl + updateTrainer)
+//		.then().assertThat().statusCode(204);
+//	}
+//	/**
+//	 * Tests methods:
+//	 * @see com.revature.caliber.controllers.TrainingController.makeInactive(Trainer)
+//	 * @throws Exception
+//	 */
+//	@Test
+//	public void makeInactive() throws Exception{
+//		Trainer expected = new Trainer("Dan Pickles", "Lead Trainer", "pjw6193@hotmail.com",
+//				TrainerRole.ROLE_VP);
+//		expected.setTrainerId(2);
+//		log.info("API Testing makeInactiv at baseUrl  " + baseUrl);
+//		given().spec(requestSpec).header("Authorization", accessToken)
+//		.contentType(ContentType.JSON).body(new ObjectMapper().writeValueAsString(expected)).when()				
+//		.delete(baseUrl + makeInactive)
+//		.then().assertThat().statusCode(204);
+//	}
+//	/**
+//	 * Tests methods:
+//	 * @see com.revature.caliber.controllers.TrainingController.getAllTrainersTitles()
+//	 * @throws Exception
+//	 */
+//	@Test
+//	public void getAllTrainersTitles() throws Exception {
+//		log.info("API Testing findTrainerByEmail at baseUrl  " + baseUrl);
+//		given().spec(requestSpec).header("Authorization", accessToken).contentType(ContentType.JSON).when()
+//				.get(baseUrl + getAllTrainersTitles).then().assertThat()
+//				.statusCode(200);
+//	}
+//	/**
+//	 * Tests methods:
+//	 * @see com.revature.caliber.controllers.TrainingController.getAllTrainers()
+//	 * @throws Exception
+//	 */
+//	@Test
+//	public void getAllTrainers() throws Exception {
+//		log.info("API Testing findTrainerByEmail at baseUrl  " + baseUrl);
+//		given().spec(requestSpec).header("Authorization", accessToken).contentType(ContentType.JSON).when()
+//				.get(baseUrl + getAllTrainers).then().assertThat()
+//				.statusCode(200);
+//	}
+//
+//	/**
+//	 * Tests methods:
+//	 * 
+//	 * @see com.revature.controllers.TrainingController#createLocation
+//	 */
+//	@Test
+//	public void createLocationTest() {
+//		Address location = new Address(20, "299 CherryStreet", "FruityCity", "FL", "55555", "Revature", true);
+//		log.info("API Testing createLocation at baseUrl " + baseUrl);
+//		given().spec(requestSpec).header("Authorization", accessToken).contentType(ContentType.JSON).body(location)
+//				.when().post(baseUrl + createLocationTest).then().assertThat().statusCode(201);
+//	}
+//
+//	/**
+//	 * Tests methods:
+//	 * 
+//	 * @see com.revature.controllers.TrainingController#updateLocation
+//	 */
+//	@Test
+//	public void updateLocationTest() throws JsonProcessingException {
+//		Address location = new Address(1, "299 CherryStreet", "FruityCity", "FL", "55555", "Revature", true);
+//		log.info("API Testing updateLocation at baseUrl " + baseUrl);
+//		given().spec(requestSpec).header("Authorization", accessToken).contentType(ContentType.JSON).body(location)
+//				.when().put(baseUrl + updateLocationTest).then().assertThat().statusCode(204);
+//	}
+//
+//	/**
+//	 * Tests methods:
+//	 * 
+//	 * @see com.revature.controllers.TrainingController#getAllLocations
+//	 */
+//	@Test
+//	public void getAllLocationsTest() throws JsonProcessingException {
+//		Address expect1 = new Address(1, "65-30 Kissena Blvd, CEP Hall 2", "Queens", "NY", "11367",
+//				"Tech Incubator at Queens College", true);
+//		Address expect2 = new Address(2, "11730 Plaza America Drive, 2nd Floor", "Reston", "VA", "20190",
+//				"Revature LLC", true);
+//		log.info("API Testing updateLocation at baseUrl " + baseUrl);
+//		given().spec(requestSpec).header("Authorization", accessToken).contentType(ContentType.JSON).when()
+//				.get(baseUrl + getAllLocationTest).then().assertThat().statusCode(200)
+//				.body(matchesJsonSchema(new ObjectMapper().writeValueAsString(expect1)))
+//				.body(matchesJsonSchema(new ObjectMapper().writeValueAsString(expect2)));
+//	}
+//
+//	/**
+//	 * Tests methods:
+//	 * 
+//	 * @see com.revature.controllers.TrainingController#removeLocation
+//	 */
+//	@Test
+//	public void removeLocationTest() {
+//		Address location = new Address(1, "299 CherryStreet", "FruityCity", "FL", "55555", "Revature", false);
+//		log.info("API Testing removeLocation at baseUrl " + baseUrl);
+//		given().spec(requestSpec).header("Authorization", accessToken).contentType(ContentType.JSON).body(location)
+//				.when().delete(baseUrl + removeLocationTest).then().assertThat().statusCode(204);
+//	}
+//
+//	/**
+//	 * Tests methods:
+//	 * 
+//	 * @see com.revature.controllers.TrainingController#reactivateLocation
+//	 */
+//	@Test
+//	public void reactivateLocationTest() {
+//		Address location = new Address(1, "299 CherryStreet", "FruityCity", "FL", "55555", "Revature", false);
+//		log.info("API Testing reactivateLocation at baseUrl " + baseUrl);
+//		given().spec(requestSpec).header("Authorization", accessToken).contentType(ContentType.JSON).body(location)
+//				.when().put(baseUrl + reactivateLocationTest).then().assertThat().statusCode(204);
+//	}
+	/**
+	 * Tests methods:
+	 * 
+	 * @see com.revature.controllers.TrainingController#createTrainee
+	 */
 	@Test
 	
 	public void createTraineeTest() throws Exception {
 		log.info("API Testing createTrainee at " + baseUrl + createTrainee);
 		Trainee expexted = new Trainee("Test McTest", "", "mctest@gmail.com", batchDao.findOne(2050));
 		given().spec(requestSpec).header(authHeader, accessToken)
-		.contentType(ContentType.JSON).body(new ObjectMapper().writeValueAsString(expexted)).when()
+		.contentType(ContentType.JSON).body(expexted).when()
 			.post(baseUrl +createTrainee).then().assertThat().statusCode(201);
+		
+//		given().spec(requestSpec).header("Authorization", accessToken)
+//		.contentType(ContentType.JSON).body(location).when()
+//		.post(baseUrl + createLocationTest).then().assertThat().statusCode(201);
 	}
-	
-	@Test
-	@Ignore
-	public void updateTraineeTest() throws Exception {
-		log.info("API Testing updateTrainee at " + baseUrl + updateTrainee);
-		BatchDAO batchDao = new BatchDAO();
-		Trainee expexted = new Trainee("Test McTest", "", "mctest@gmail.com", batchDao.findOne(2050));
-		given().spec(requestSpec).header(authHeader, accessToken)
-		.contentType(ContentType.JSON);
-	}
-	@Test
-	@Ignore
-	public void deleteTraineeTest() throws Exception {
-		log.info("API Testing deleteTrainee at " + baseUrl + deleteTrainee);
-		BatchDAO batchDao = new BatchDAO();
-		Trainee expexted = new Trainee("Test McTest", "", "mctest@gmail.com", batchDao.findOne(2050));
-		given().spec(requestSpec).header(authHeader, accessToken)
-		.contentType(ContentType.JSON);
-	}
-	@Test
-	@Ignore
-	public void retreiveTraineeByEmailTest(){
-		log.info("API Testing retreiveTraineeByEmail at " + baseUrl + retreiveTraineeByEmail);
-		BatchDAO batchDao = new BatchDAO();
-		Trainee expexted = new Trainee("Test McTest", "", "mctest@gmail.com", batchDao.findOne(2050));
-		given().spec(requestSpec).header(authHeader, accessToken)
-		.contentType(ContentType.JSON);
-	}	
+	/**
+	 * Tests methods:
+	 * 
+	 * @see com.revature.controllers.TrainingController#updateTrainee
+	 */
+//	@Test
+//	public void updateTraineeTest() throws Exception {
+//		log.info("API Testing updateTrainee at " + baseUrl + updateTrainee);
+//		BatchDAO batchDao = new BatchDAO();
+//		Trainee expexted = new Trainee("Test McTest", "", "mctest@gmail.com", batchDao.findOne(2050));
+//		given().spec(requestSpec).header(authHeader, accessToken)
+//		.contentType(ContentType.JSON);
+//	}
+//	/**
+//	 * Tests methods:
+//	 * 
+//	 * @see com.revature.controllers.TrainingController#deleteTrainee
+//	 */
+//	@Test
+//	@Ignore
+//	public void deleteTraineeTest() throws Exception {
+//		log.info("API Testing deleteTrainee at " + baseUrl + deleteTrainee);
+//		BatchDAO batchDao = new BatchDAO();
+//		Trainee expexted = new Trainee("Test McTest", "", "mctest@gmail.com", batchDao.findOne(2050));
+//		given().spec(requestSpec).header(authHeader, accessToken)
+//		.contentType(ContentType.JSON).body(expexted).when().put(baseUrl + deleteTrainee)
+//		.then().assertThat().statusCode(204);
+//		
+//		
+//	}
+//	
+//	/**
+//	 * Tests methods:
+//	 * 
+//	 * @see com.revature.controllers.TrainingController#retreiveTraineeByEmail
+//	 */
+//	@Test
+//	@Ignore
+//	public void retreiveTraineeByEmailTest(){
+//		log.info("API Testing retreiveTraineeByEmail at " + baseUrl + retreiveTraineeByEmail);
+//		BatchDAO batchDao = new BatchDAO();
+//		Trainee expexted = new Trainee("Test McTest", "", "mctest@gmail.com", batchDao.findOne(2050));
+//		given().spec(requestSpec).header(authHeader, accessToken)
+//		.contentType(ContentType.JSON);
+//	}	
 	
 }
+
