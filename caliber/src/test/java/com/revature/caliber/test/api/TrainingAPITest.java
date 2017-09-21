@@ -6,13 +6,11 @@ import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
 import org.apache.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
-<<<<<<< HEAD
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.test.annotation.Rollback;
 import org.springframework.web.bind.annotation.PathVariable;
-=======
->>>>>>> 98dfeabb2ffcc214c1e52a241c6090c081a49c36
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,13 +40,11 @@ public class TrainingAPITest extends AbstractAPITest {
 	 */
 	private String findByEmail = "training/trainer/byemail/patrick.walsh@revature.com/";
 
-<<<<<<< HEAD
+
 	private String createTrainee ="all/trainee/create";
 	private String updateTrainee = "all/trainee/update";
 	private String deleteTrainee = "all/trainee/delete/5468";
 	private String retreiveTraineeByEmail = "/all/trainee/getByEmail/starrv2011@gmail.com";
-=======
->>>>>>> 98dfeabb2ffcc214c1e52a241c6090c081a49c36
 	private String createTrainer = "vp/trainer/create";
 	private String updateTrainer = "vp/trainer/update";
 	private String makeInactive = "vp/trainer/delete";
@@ -65,21 +61,21 @@ public class TrainingAPITest extends AbstractAPITest {
 	@Autowired
 	TraineeDAO traineeDao;
 
-	@Test
-	public void findByEmail() throws Exception {
-		Trainer expected = new Trainer("Patrick Walsh", "Lead Trainer", "patrick.walsh@revature.com",
-				TrainerRole.ROLE_VP);
-		expected.setTrainerId(1);
-		log.info("API Testing findTrainerByEmail at " + baseUrl + findByEmail);
-		given().spec(requestSpec).header(authHeader, accessToken).contentType(ContentType.JSON).when()
-				.get(baseUrl + findByEmail).then().assertThat().statusCode(200)
-				.body(matchesJsonSchema(new ObjectMapper().writeValueAsString(expected)));
-	}
-	/**
-	 * Tests methods:
-	 * @see com.revature.caliber.controllers.TrainingController.createTrainer(Trainer)
-	 * @throws Exception
-	 */
+//	@Test
+//	public void findByEmail() throws Exception {
+//		Trainer expected = new Trainer("Patrick Walsh", "Lead Trainer", "patrick.walsh@revature.com",
+//				TrainerRole.ROLE_VP);
+//		expected.setTrainerId(1);
+//		log.info("API Testing findTrainerByEmail at " + baseUrl + findByEmail);
+//		given().spec(requestSpec).header(authHeader, accessToken).contentType(ContentType.JSON).when()
+//				.get(baseUrl + findByEmail).then().assertThat().statusCode(200)
+//				.body(matchesJsonSchema(new ObjectMapper().writeValueAsString(expected)));
+//	}
+//	/**
+//	 * Tests methods:
+//	 * @see com.revature.caliber.controllers.TrainingController.createTrainer(Trainer)
+//	 * @throws Exception
+//	 */
 //	@Test
 //	public void createTrainer() throws Exception{
 //		Trainer expected = new Trainer("RolledBack", "Senior Trainer", "don.welshy@revature.com",
@@ -209,23 +205,25 @@ public class TrainingAPITest extends AbstractAPITest {
 //	 * 
 //	 * @see com.revature.controllers.TrainingController#reactivateLocation
 //	 */
-//	@Test
 //	public void reactivateLocationTest() {
 //		Address location = new Address(1, "299 CherryStreet", "FruityCity", "FL", "55555", "Revature", false);
 //		log.info("API Testing reactivateLocation at baseUrl " + baseUrl);
 //		given().spec(requestSpec).header("Authorization", accessToken).contentType(ContentType.JSON).body(location)
 //				.when().put(baseUrl + reactivateLocationTest).then().assertThat().statusCode(204);
 //	}
+	
+	
 	/**
 	 * Tests methods:
 	 * 
 	 * @see com.revature.controllers.TrainingController#createTrainee
+	 * Testing to creating the Trainee Test McTest
 	 */
 	@Test
 	
 	public void createTraineeTest() throws Exception {
 		log.info("API Testing createTrainee at " + baseUrl + createTrainee);
-		Trainee expexted = new Trainee("Test McTest", "", "mctest@gmail.com", batchDao.findOne(2050));
+		Trainee expexted = new Trainee("McTest, Test", "", "mctest@gmail.com", batchDao.findOne(2050));
 		given().spec(requestSpec).header("Authorization", accessToken)
 		.contentType(ContentType.JSON).body(expexted).when()
 		.post(baseUrl + createTrainee).then().assertThat().statusCode(201);
@@ -234,16 +232,14 @@ public class TrainingAPITest extends AbstractAPITest {
 	 * Tests methods:
 	 * 
 	 * @see com.revature.controllers.TrainingController#updateTrainee
+	 * Test to change Osher Cohen's name to  Test McTest and update the field
 	 */
 	@Test
 	public void updateTraineeTest() throws Exception {
 		log.info("API Testing updateTrainee at " + baseUrl + updateTrainee);
-
 		Trainee expexted = traineeDao.findOne(5503);
 		System.out.println(expexted);
-		expexted.setName("Test McTest");
-
-		
+		expexted.setName("McTest, Test");		
 		given().spec(requestSpec).header("Authorization", accessToken)
 		.contentType(ContentType.JSON).body(new ObjectMapper().writeValueAsString(expexted))
 		.when().put(baseUrl + updateTrainee).then().assertThat().statusCode(204);
@@ -252,6 +248,7 @@ public class TrainingAPITest extends AbstractAPITest {
 	 * Tests methods:
 	 * 
 	 * @see com.revature.controllers.TrainingController#deleteTrainee
+	 * Test to delete Daniel Laut
 	 */
 	@Test
 	public void deleteTraineeTest() throws Exception {
@@ -268,24 +265,20 @@ public class TrainingAPITest extends AbstractAPITest {
 	 * Tests methods:
 	 * 
 	 * @see com.revature.controllers.TrainingController#retreiveTraineeByEmail
+	 * Test to find Martino Nikolovski by his email
+	 * 		rest of test Trainee is just JSON filler
 	 */
 	@Test
-<<<<<<< HEAD
 	public void retreiveTraineeByEmailTest() throws Exception {
 		log.info("API Testing retreiveTraineeByEmail at " + baseUrl + retreiveTraineeByEmail);
-		Trainee expexted = new Trainee("Test McTest", "", "mctest@gmail.com", batchDao.findOne(2050));
+		Trainee expexted = new Trainee("Test McTest", "", "nikolovski23@gmail.com", batchDao.findOne(2050));
 		given().spec(requestSpec).header("Authorization", accessToken).contentType(ContentType.JSON).when()
 		.get(baseUrl + findByEmail).then().assertThat().statusCode(200)
 		.body(matchesJsonSchema(new ObjectMapper().writeValueAsString(expexted)));
 	}	
 	
-=======
-	public void reactivateLocationTest() {
-		Address location = new Address(1, "299 CherryStreet", "FruityCity", "FL", "55555", "Revature", false);
-		log.info("API Testing reactivateLocation at baseUrl " + baseUrl);
-		given().spec(requestSpec).header("Authorization", accessToken).contentType(ContentType.JSON).body(location)
-				.when().put(baseUrl + reactivateLocationTest).then().assertThat().statusCode(204);
-	}
->>>>>>> 98dfeabb2ffcc214c1e52a241c6090c081a49c36
+
+
+
 }
 
